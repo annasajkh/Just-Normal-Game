@@ -1,0 +1,98 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://scripts/Player.gd" type="Script" id=1]
+[ext_resource path="res://asset/sound/collide.wav" type="AudioStream" id=2]
+[ext_resource path="res://asset/sound/break.wav" type="AudioStream" id=3]
+
+[sub_resource type="CubeMesh" id=1]
+size = Vector3( 50, 50, 0 )
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 25, 25 )
+
+[sub_resource type="Gradient" id=3]
+colors = PoolColorArray( 0.380392, 0.403922, 0.992157, 1, 0.380392, 0.403922, 0.992157, 0 )
+
+[sub_resource type="GradientTexture" id=4]
+gradient = SubResource( 3 )
+
+[sub_resource type="ParticlesMaterial" id=5]
+flag_disable_z = true
+gravity = Vector3( 0, 0, 0 )
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+scale = 50.0
+color_ramp = SubResource( 4 )
+
+[sub_resource type="Gradient" id=6]
+colors = PoolColorArray( 0, 0.0392157, 1, 1, 0, 0.0392157, 1, 0.207843 )
+
+[sub_resource type="GradientTexture" id=7]
+gradient = SubResource( 6 )
+
+[sub_resource type="ParticlesMaterial" id=8]
+flag_disable_z = true
+spread = 180.0
+gravity = Vector3( 0, 80, 0 )
+initial_velocity = 100.0
+angular_velocity = 100.0
+angular_velocity_random = 1.0
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+scale = 10.0
+color_ramp = SubResource( 7 )
+
+[node name="Player" type="KinematicBody2D"]
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="."]
+modulate = Color( 0, 0.0392157, 1, 1 )
+mesh = SubResource( 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 2 )
+
+[node name="TrailParticle" type="Particles2D" parent="."]
+show_behind_parent = true
+amount = 20
+lifetime = 0.3
+local_coords = false
+process_material = SubResource( 5 )
+
+[node name="DieParticle" type="Particles2D" parent="."]
+emitting = false
+amount = 30
+one_shot = true
+speed_scale = 1.8
+explosiveness = 0.63
+randomness = 1.0
+process_material = SubResource( 8 )
+
+[node name="DieTime" type="Timer" parent="."]
+one_shot = true
+
+[node name="Camera2D" type="Camera2D" parent="."]
+current = true
+limit_left = 0
+limit_top = 0
+limit_right = 5000
+limit_bottom = 600
+smoothing_enabled = true
+editor_draw_limits = true
+editor_draw_drag_margin = true
+
+[node name="Collide" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 2 )
+volume_db = -8.0
+
+[node name="Break" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 3 )
+volume_db = -13.0
+
+[node name="VisibilityNotifier2D" type="VisibilityNotifier2D" parent="."]
+scale = Vector2( 2.5, 2.5 )
+[connection signal="timeout" from="DieTime" to="." method="_on_DieTime_timeout"]
+[connection signal="screen_exited" from="VisibilityNotifier2D" to="." method="_on_VisibilityNotifier2D_screen_exited"]

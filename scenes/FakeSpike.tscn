@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="PrismMesh" id=1]
+size = Vector3( 50, 50, 0 )
+
+[node name="FakeSpike" type="MeshInstance2D"]
+modulate = Color( 1, 0, 0, 1 )
+rotation = 3.14159
+mesh = SubResource( 1 )
